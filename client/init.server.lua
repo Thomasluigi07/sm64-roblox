@@ -608,6 +608,10 @@ local function update(dt: number)
 			local anim = mario.AnimCurrent
 			local animSpeed = 0.1 / simSpeed
 
+			if RunService:IsStudio() then
+				print(anim)
+			end
+
 			if activeTrack and (activeTrack.Animation ~= anim or mario.AnimReset) then
 				if tostring(activeTrack.Animation) == "TURNING_PART1" then
 					if anim and anim.Name == "TURNING_PART2" then

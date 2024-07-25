@@ -17,8 +17,8 @@
                     "WingCap": false,
                     "HotLoading": false,
                     "DebugToggle": true,
-                    "TruncateBounds": true,
-                    "ToolAssistedInput": true
+                    "TruncateBounds": false,
+                    "ToolAssistedInput": false
                 },
 
                 "Client": {
