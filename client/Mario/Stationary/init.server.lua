@@ -321,7 +321,7 @@ DEF_ACTION(Action.CROUCHING, function(m: Mario)
 	end
 
 	if m.Input:Has(InputFlags.A_PRESSED) then
-		return m:SetAction(Action.BACKFLIP)
+		return m:SetAction(Action.JUMP)
 	end
 
 	if m.Input:Has(InputFlags.OFF_FLOOR) then

@@ -509,7 +509,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": ""
+				"SoundId": "rbxassetid://18650060054"
 			}
 		},
         
@@ -520,7 +520,29 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": ""
+				"SoundId": "rbxassetid://18650060054"
+			}
+		},
+
+		{
+			"name": "MARIO_DROWNING",
+			"className": "Sound",
+            
+			"properties": {
+				"RollOffMinDistance": 8,
+				"RollOffMaxDistance": 128,
+				"SoundId": "rbxassetid://18650060054"
+			}
+		},
+
+		{
+			"name": "MARIO_DYING",
+			"className": "Sound",
+            
+			"properties": {
+				"RollOffMinDistance": 8,
+				"RollOffMaxDistance": 128,
+				"SoundId": "rbxassetid://18650060054"
 			}
 		},
         
@@ -542,7 +564,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": "rbxassetid://14000781869",
+				"SoundId": "",
 				"Volume": 3
 			}
 		},
@@ -565,7 +587,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": "rbxassetid://11277164346"
+				"SoundId": "rbxassetid://18650061043"
 			}
 		},
         
@@ -576,7 +598,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": "rbxassetid://11276429582"
+				"SoundId": "rbxassetid://18650061828"
 			}
 		},
         
@@ -587,7 +609,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": "rbxassetid://11276995011"
+				"SoundId": ""
 			}
 		},
         
@@ -603,7 +625,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": "rbxassetid://11276348319"
+				"SoundId": "rbxassetid://18650062126"
 			}
 		},
         
@@ -614,7 +636,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": "rbxassetid://11276772310"
+				"SoundId": "rbxassetid://18650060604"
 			}
 		},
         
@@ -636,7 +658,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": "rbxassetid://11276465437"
+				"SoundId": "rbxassetid://18650062932"
 			}
 		},
         
@@ -647,7 +669,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": "rbxassetid://11276487760"
+				"SoundId": "rbxassetid://18650060054"
 			}
 		},
         
@@ -702,7 +724,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": "rbxassetid://11277042069"
+				"SoundId": ""
 			}
 		},
         
@@ -713,7 +735,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": "rbxassetid://11277042275"
+				"SoundId": ""
 			}
 		},
         
@@ -724,7 +746,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": "rbxassetid://11277042405"
+				"SoundId": ""
 			}
 		},
         
@@ -735,7 +757,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": "rbxassetid://11276138169"
+				"SoundId": ""
 			}
 		},
         
@@ -768,7 +790,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": ""
+				"SoundId": "rbxassetid://18650062932"
 			}
 		},
         
@@ -779,7 +801,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": "rbxassetid://11276772310"
+				"SoundId": "rbxassetid://18650061485"
 			}
 		},
         
@@ -790,7 +812,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": "rbxassetid://11276223526"
+				"SoundId": "rbxassetid://18650058955"
 			}
 		},
         
@@ -801,7 +823,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": "rbxassetid://11276240769"
+				"SoundId": "rbxassetid://18650060604"
 			}
 		},
         
@@ -812,7 +834,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": "rbxassetid://11276266154"
+				"SoundId": "rbxassetid://18650062126"
 			}
 		},
         
@@ -823,7 +845,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": "rbxassetid://11276297854",
+				"SoundId": "rbxassetid://18650058955",
 				"PlaybackRegionsEnabled": false
 			}
 		},
@@ -857,7 +879,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": "rbxassetid://11276996044"
+				"SoundId": ""
 			}
 		},
         
@@ -868,7 +890,7 @@
 			"properties": {
 				"RollOffMinDistance": 8,
 				"RollOffMaxDistance": 128,
-				"SoundId": "rbxassetid://11276223467"
+				"SoundId": "rbxassetid://18650063312"
 			}
 		},
         

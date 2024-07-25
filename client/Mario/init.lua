@@ -196,8 +196,10 @@ function Mario.PlayJumpSound(m: Mario)
 		return
 	end
 
-	if m.Action() == Action.TRIPLE_JUMP then
+	if m.Action() == Action.TWIRLING then
 		m:PlaySound(Sounds.MARIO_YAHOO_WAHA_YIPPEE)
+	elseif m.Action() == Action.TRIPLE_JUMP then
+			m:PlaySound(Sounds.MARIO_YAHOO_WAHA_YIPPEE)	
 	elseif m.Action() == Action.JUMP_KICK then
 		m:PlaySound(Sounds.MARIO_PUNCH_HOO)
 	else
@@ -768,6 +770,7 @@ function Mario.SetJumpFromLanding(m: Mario)
 				m:SetAction(Action.FLYING_TRIPLE_JUMP)
 			elseif m.ForwardVel > 20 then
 				m:SetAction(Action.TRIPLE_JUMP)
+				m:SetAction(Action.TWIRLING)
 			else
 				m:SetAction(Action.JUMP)
 			end

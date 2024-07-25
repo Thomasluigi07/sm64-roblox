@@ -207,7 +207,8 @@ local function setTripleJumpAction(m: Mario)
 	if m.Flags:Has(MarioFlags.WING_CAP) then
 		return m:SetAction(Action.FLYING_TRIPLE_JUMP)
 	elseif m.ForwardVel > 20 then
-		return m:SetAction(Action.TRIPLE_JUMP)
+		m:SetAction(Action.TRIPLE_JUMP)
+		return m:SetAction(Action.TWIRLING)
 	else
 		return m:SetAction(Action.JUMP)
 	end

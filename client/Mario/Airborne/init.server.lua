@@ -584,6 +584,8 @@ DEF_ACTION(Action.TWIRLING, function(m: Mario)
 	local startTwirlYaw = m.TwirlYaw
 	local yawVelTarget = 0x1000
 
+	m:PlayJumpSound()
+
 	if m.Input:Has(InputFlags.A_DOWN) then
 		yawVelTarget = 0x2000
 	end
@@ -718,7 +720,8 @@ DEF_ACTION(Action.GROUND_POUND, function(m: Mario)
 
 	m:PlaySoundIfNoFlag(Sounds.ACTION_THROW, MarioFlags.ACTION_SOUND_PLAYED)
 
-	if m.ActionState == 0 then
+	--if m.ActionState == 0 then
+		--[[
 		if m.ActionTimer < 10 then
 			yOffset = 20 - 2 * m.ActionTimer
 
@@ -727,7 +730,7 @@ DEF_ACTION(Action.GROUND_POUND, function(m: Mario)
 				m.PeakHeight = m.Position.Y
 			end
 		end
-
+		]]--
 		m.Velocity = Util.SetY(m.Velocity, -50)
 		m:SetForwardVel(0)
 		m.Inertia = Vector3.zero
@@ -745,7 +748,7 @@ DEF_ACTION(Action.GROUND_POUND, function(m: Mario)
 			m:PlaySound(Sounds.MARIO_GROUND_POUND_WAH)
 			m.ActionState = 1
 		end
-	else
+	--else
 		m:SetAnimation(Animations.GROUND_POUND)
 		stepResult = m:PerformAirStep()
 
@@ -763,7 +766,7 @@ DEF_ACTION(Action.GROUND_POUND, function(m: Mario)
 			m.ParticleFlags:Add(ParticleFlags.VERTICAL_STAR)
 			m:SetAction(Action.BACKWARD_AIR_KB)
 		end
-	end
+	--end
 
 	return false
 end)
