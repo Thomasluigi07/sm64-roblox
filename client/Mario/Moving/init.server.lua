@@ -426,8 +426,8 @@ end
 
 local function updateDeceleratingSpeed(m: Mario)
 	local stopped = false
-	m.ForwardVel = Util.ApproachFloat(m.ForwardVel, 0, 1)
-
+	-- m.ForwardVel = Util.ApproachFloat(m.ForwardVel, 0, 1)
+	m.ForwardVel = 0
 	if m.ForwardVel == 0 then
 		stopped = true
 	end
