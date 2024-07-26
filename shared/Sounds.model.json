@@ -925,6 +925,17 @@
 				"RollOffMaxDistance": 128,
 				"SoundId": "rbxassetid://9118770924"
 			}
+		},
+
+		{
+			"name": "MOVING_QUICKSAND_DEATH",
+			"className": "Sound",
+            
+			"properties": {
+				"RollOffMinDistance": 8,
+				"RollOffMaxDistance": 128,
+				"SoundId": "rbxassetid://9118029506"
+			}
 		}
 	]
 }	
