@@ -417,7 +417,7 @@ local function applySlopeDecel(m: Mario, decelCoef: number)
 	-- m.ForwardVel = Util.ApproachFloat(m.ForwardVel, 0, decel)
 	-- Anything can happen in a Roll Hack!
 	-- This is probably a very hacky method to get no deceleration.
-	-- It seems to be simalar to how it acts in B3313 though, but I will have to compare to actual footage.
+	-- It seems to be simalar to how it acts in B3313 though, but I will have to compare to actual Shoshinkai footage.
 	m.ForwardVel = 0
 
 	if m.ForwardVel == 0 then
