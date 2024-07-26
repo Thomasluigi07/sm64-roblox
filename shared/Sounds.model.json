@@ -224,6 +224,18 @@
 				"Volume": 1
 			}
 		},
+
+		{
+			"name": "ACTION_TERRAIN_BODY_HIT_GROUND_DEFAULT",
+			"className": "Sound",
+            
+			"properties": {
+				"RollOffMinDistance": 8,
+				"RollOffMaxDistance": 128,
+				"SoundId": "rbxasset://sounds/action_jump_land.mp3",
+				"Volume": 1
+			}
+		},
         
 		{
 			"name": "ACTION_TERRAIN_JUMP",
