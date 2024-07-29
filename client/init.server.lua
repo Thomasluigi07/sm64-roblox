@@ -119,9 +119,10 @@ local function processAction(id: string, state: Enum.UserInputState, input: Inpu
 			end
 		end
 	elseif id == "TASInputForceToggle" then
-		-- Hello you have found me ! I shall now do jumpkicks up these slopes you create.
-		-- I'm evil.
-		TAS_INPUT_OVERRIDE = (state == Enum.UserInputState.Begin)
+		if state == Enum.UserInputState.Begin then
+			TAS_INPUT_OVERRIDE = not TAS_INPUT_OVERRIDE
+			print(`<- TAS input override {TAS_INPUT_OVERRIDE and "ON" or "OFF"} ->`)
+		end
 	else
 		local button = toStrictNumber(id:sub(5))
 		BUTTON_FEED[button] = state
@@ -238,7 +239,7 @@ local function updateController(controller: Controller, humanoid: Humanoid?)
 end
 
 ContextActionService:BindAction("MarioDebug", processAction, false, Enum.KeyCode.P)
-ContextActionService:BindAction("TASInputForceToggle", processAction, false, Enum.KeyCode.LeftControl)
+ContextActionService:BindAction("TASInputForceToggle", processAction, false, Enum.KeyCode.RightControl)
 bindInput(Buttons.B_BUTTON, "B", Enum.UserInputType.MouseButton1, Enum.KeyCode.ButtonX)
 bindInput(
 	Buttons.Z_TRIG,
@@ -543,6 +544,7 @@ local function update(dt: number)
 	end
 
 	local now = os.clock()
+	local dt = math.min(dt, 0.1)
 	local gfxRot = CFrame.identity
 	local scale = character:GetScale()
 
@@ -596,8 +598,13 @@ local function update(dt: number)
 		updateController(mario.Controller, humanoid)
 		mario:ExecuteAction()
 
-		local gfxPos = Util.ToRoblox(mario.Position + mario.GfxPos)
+		local gfxPosOffset = Util.ToRoblox(mario.GfxPos)
+		local gfxPos = Util.ToRoblox(mario.Position) + gfxPosOffset
 		gfxRot = Util.ToRotation(mario.GfxAngle)
+
+		if humanoid then
+			humanoid.CameraOffset = humanoid.CameraOffset:Lerp(-gfxPosOffset, dt * 16)
+		end
 
 		mario.GfxPos = Vector3.zero
 		mario.GfxAngle = Vector3int16.new()
@@ -715,11 +722,11 @@ local function update(dt: number)
 				setDebugStat("Wall", wall and wall.Instance.Name or NULL_TEXT)
 
 				local floor = mario.Floor
-				local floorType = floor and ` (SurfaceClass.{Enums.GetName(SurfaceClass, mario:GetFloorType())})`
+				local floorType = floor and ` (SurfaceClass.{Enums.GetName(SurfaceClass, mario:GetFloorType())})` or ""
 				setDebugStat("Floor", floor and floor.Instance.Name .. floorType or NULL_TEXT)
 
 				local ceil = mario.Ceil
-				local ceilType = ceil and ` (SurfaceClass.{Enums.GetName(SurfaceClass, mario:GetCeilType())})`
+				local ceilType = ceil and ` (SurfaceClass.{Enums.GetName(SurfaceClass, mario:GetCeilType())})` or ""
 				setDebugStat("Ceiling", ceil and ceil.Instance.Name .. ceilType or NULL_TEXT)
 
 				setDebugStat(
