@@ -557,17 +557,6 @@
 				"SoundId": "rbxassetid://18650060054"
 			}
 		},
-
-		{
-			"name": "MARIO_DYING",
-			"className": "Sound",
-            
-			"properties": {
-				"RollOffMinDistance": 8,
-				"RollOffMaxDistance": 128,
-				"SoundId": ""
-			}
-		},
         
 		{
 			"name": "MARIO_DOH",
