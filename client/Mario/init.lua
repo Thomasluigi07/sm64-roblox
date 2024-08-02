@@ -370,59 +370,59 @@ function Mario.GetTerrainType(m: Mario): number
 	return TerrainType.DEFAULT
 end
 
-local function getSurfaceType(ray: RaycastResult?): number
-	if not ray then
-		return 0
-	end
+function Mario.GetFloorType(m: Mario): number
+	local ray: RaycastResult? = m.Floor
+	local instance: BasePart? = ray and ray.Instance :: BasePart
 
-	local instance = ray and ray.Instance
-	local material: Enum.Material = (instance :: BasePart).Material
+	if ray and instance then
+		local material: Enum.Material = instance.Material
 
-	if instance then
-		-- Manually defined SurfaceClass has top priority
-		local ManualDefine = instance:GetAttribute("SurfaceClass")
+		local ManualDefine = instance:GetAttribute("FloorSurfaceClass")
 		if SurfaceClass[ManualDefine] then
 			return SurfaceClass[ManualDefine]
 		end
 
-		do -- Floor surfaces
-			-- Quicksand check
-			if (string.match(string.lower(instance.Name), "quicksand")) or instance:HasTag("Quicksand") then
-				local QuicksandType = instance:GetAttribute("QuicksandType")
-				if
-					typeof(QuicksandType) == "string"
-					and string.match(QuicksandType, "QUICKSAND")
-					and SurfaceClass[QuicksandType]
-				then
-					return SurfaceClass[QuicksandType]
-				end
-
-				return SurfaceClass.MOVING_QUICKSAND
-			end
-
-			-- Lava check
-			if material == Enum.Material.CrackedLava then
-				return SurfaceClass.BURNING
-			end
+		-- Lava surface check
+		if material == Enum.Material.CrackedLava then
+			return SurfaceClass.BURNING
 		end
 
-		do -- Ceil surfaces
-			-- Hangable ceiling check
-			if (instance:HasTag("Hangable")) or (material == Enum.Material.DiamondPlate) then
-				return SurfaceClass.HANGABLE
+		-- Quicksand surface check
+		if (string.match(string.lower(instance.Name), "quicksand")) or instance:HasTag("Quicksand") then
+			local QuicksandType = instance:GetAttribute("QuicksandType")
+			if
+				typeof(QuicksandType) == "string"
+				and string.match(QuicksandType, "QUICKSAND")
+				and SurfaceClass[QuicksandType]
+			then
+				return SurfaceClass[QuicksandType]
 			end
+
+			return SurfaceClass.MOVING_QUICKSAND
 		end
 	end
 
 	return 0
 end
 
-function Mario.GetFloorType(m: Mario): number
-	return getSurfaceType(m.Floor)
-end
-
 function Mario.GetCeilType(m: Mario): number
-	return getSurfaceType(m.Ceil)
+	local ceil: RaycastResult? = m.Ceil
+	local instance: BasePart? = ceil and ceil.Instance :: BasePart
+
+	if ceil and instance then
+		local material: Enum.Material = instance.Material
+
+		local ManualDefine = instance:GetAttribute("CeilSurfaceClass")
+		if SurfaceClass[ManualDefine] then
+			return SurfaceClass[ManualDefine]
+		end
+
+		if instance:HasTag("Hangable") or material == Enum.Material.DiamondPlate then
+			return SurfaceClass.HANGABLE
+		end
+	end
+
+	return 0
 end
 
 function Mario.FacingDownhill(m: Mario, turnYaw: boolean?): boolean
@@ -996,14 +996,6 @@ function Mario.StationaryGroundStep(m: Mario): number
 	m:SetForwardVel(0)
 	local stepResult = m:PerformGroundStep()
 
-	-- This should hopefully not cause any unexpected behavior.
-	-- Sometimes you won't slip off the ground when pushed off
-	-- by a conveyor or physics...
-	if stepResult == GroundStep.LEFT_GROUND then
-		m:SetAction(Action.FREEFALL)
-		m.Input:Add(InputFlags.OFF_FLOOR)
-	end
-
 	return stepResult
 end
 
@@ -1028,6 +1020,7 @@ function Mario.PerformGroundQuarterStep(m: Mario, nextPos: Vector3): number
 			return GroundStep.HIT_WALL_STOP_QSTEPS
 		end
 
+		m.Position = nextPos
 		m.Floor = floor
 		m.FloorHeight = floorHeight
 
@@ -1484,11 +1477,14 @@ function Mario.UpdateInputs(m: Mario)
 	m:UpdateGeometryInputs()
 
 	-- TODO implement first person something control
-	--[[if cond then
+	--[[
+	local camera = workspace.CurrentCamera
+	if camera and (camera.Focus.Position - camera.CFrame.Position).Magnitude < 1 then
 		if m.Action:Has(ActionFlags.ALLOW_FIRST_PERSON) then
 			m.Input:Add(InputFlags.FIRST_PERSON)
 		end
-	end]]
+	end
+	]]
 
 	if not m.Input:Has(InputFlags.NONZERO_ANALOG, InputFlags.A_PRESSED) then
 		m.Input:Add(InputFlags.NO_MOVEMENT)
@@ -1624,7 +1620,7 @@ function Mario.CheckKickOrPunchWall(m: Mario)
 			Util.Coss(m.FaceAngle.Y)
 		)
 
-		local detector = m.Position + (range * 50)
+		local detector = m.Position + (range * 49.5)
 		local _disp, wall = Util.FindWallCollisions(detector, 80, 5)
 
 		if wall then
