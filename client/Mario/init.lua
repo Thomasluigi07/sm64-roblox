@@ -833,6 +833,8 @@ function Mario.UpdatePunchSequence(m: Mario)
 
 	local actionArg = m.ActionArg
 
+	-- i think there was no triple punch, gotta check
+
 	if actionArg == 0 or actionArg == 1 then
 		if actionArg == 0 then
 			m:PlaySound(Sounds.MARIO_PUNCH_YAH)
@@ -859,36 +861,6 @@ function Mario.UpdatePunchSequence(m: Mario)
 			m:SetAction(endAction)
 		end
 	elseif actionArg == 3 or actionArg == 4 then
-		if actionArg == 3 then
-			m:PlaySound(Sounds.MARIO_PUNCH_WAH)
-		end
-
-		m:SetAnimation(Animations.SECOND_PUNCH)
-		m.ActionArg = m:IsAnimPastEnd() and 5 or 4
-
-		if m.AnimFrame > 0 then
-			m.Flags:Add(MarioFlags.PUNCHING)
-		end
-
-		if m.ActionArg == 5 then
-			m.BodyState.PunchType = 1
-			m.BodyState.PunchTimer = 4
-		end
-	elseif actionArg == 5 then
-		m:SetAnimation(Animations.SECOND_PUNCH_FAST)
-
-		if m.AnimFrame <= 0 then
-			m.Flags:Add(MarioFlags.PUNCHING)
-		end
-
-		if m.Input:Has(InputFlags.B_PRESSED) then
-			m.ActionArg = 6
-		end
-
-		if m:IsAnimAtEnd() then
-			m:SetAction(endAction)
-		end
-	elseif actionArg == 6 then
 		m:PlayActionSound(Sounds.MARIO_PUNCH_HOO, 1)
 		animFrame = m:SetAnimation(Animations.GROUND_KICK)
 
@@ -904,7 +876,7 @@ function Mario.UpdatePunchSequence(m: Mario)
 		if m:IsAnimAtEnd() then
 			m:SetAction(endAction)
 		end
-	elseif actionArg == 9 then
+	elseif actionArg == 5  then
 		m:PlayActionSound(Sounds.MARIO_PUNCH_HOO, 1)
 		m:SetAnimation(Animations.BREAKDANCE)
 		animFrame = m.AnimFrame
