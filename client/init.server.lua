@@ -513,6 +513,15 @@ local function onReset()
 end
 
 local function getWaterLevel(pos: Vector3)
+	-- Get water height from part planes.
+	-- Note that even if you're not inside of them, you'll still
+	-- swim there, since it's just based on the position the Raycast
+	-- landed on.
+	local waterHeightFromPlane, waterPlane = Util.FindTaggedPlane(Util.ToSM64(pos), "Water")
+	if waterPlane then
+		return waterHeightFromPlane
+	end
+
 	local terrain = workspace.Terrain
 	local voxelPos = terrain:WorldToCellPreferSolid(pos)
 
@@ -590,8 +599,8 @@ local function update(dt: number)
 	end
 
 	subframe = math.min(subframe, 4) -- Prevent execution runoff
-
 	while subframe >= 1 do
+		Util.GlobalTimer += 1
 		subframe -= 1
 		updateCollisions()
 
@@ -603,7 +612,9 @@ local function update(dt: number)
 		gfxRot = Util.ToRotation(mario.GfxAngle)
 
 		if humanoid then
-			humanoid.CameraOffset = humanoid.CameraOffset:Lerp(-gfxPosOffset, dt * 16)
+			humanoid.CameraOffset = if gfxPosOffset == Vector3.zero
+				then humanoid.CameraOffset:Lerp(-gfxPosOffset, dt * 16)
+				else -gfxPosOffset
 		end
 
 		mario.GfxPos = Vector3.zero

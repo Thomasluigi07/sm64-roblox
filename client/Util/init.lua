@@ -1,4 +1,5 @@
 --!strict
+local CollectionService = game:GetService("CollectionService")
 local RunService = game:GetService("RunService")
 local Core = script.Parent.Parent
 
@@ -32,27 +33,18 @@ focalPlane.Parent = waterPlane
 
 -- [!!] Photosensitivity warning for this debug util
 -- causes flashing colors sometimes
-local surfacePlane = Instance.new("Decal")
-surfacePlane.Texture = "rbxassetid://11996254337"
-surfacePlane.Name = "CollisionSurfacePlane"
-surfacePlane.Transparency = 0.5
-surfacePlane.ZIndex = 512
-local surfacePlanes: { [string]: Decal } = {
-	Wall = surfacePlane,
-	Ceil = surfacePlane:Clone(),
-	Floor = surfacePlane:Clone(),
-}
+local wallSurfacePlane = Instance.new("Decal")
+wallSurfacePlane.Texture = "rbxassetid://11996254337"
+wallSurfacePlane.Name = "CollisionSurfacePlane"
+wallSurfacePlane.Transparency = 0.5
+wallSurfacePlane.ZIndex = 512
+wallSurfacePlane.Color3 = Color3.fromRGB(128, 255, 0)
 
--- ignore allat sorry
-for planeName, color in
-	{
-		["Ceil"] = Color3.fromRGB(200, 0, 0),
-		["Wall"] = Color3.fromRGB(128, 255, 0),
-		["Floor"] = Color3.fromRGB(0, 64, 255),
-	}
-do
-	surfacePlanes[planeName :: string].Color3 = color :: Color3
-end
+local floorSurfacePlane = wallSurfacePlane:Clone()
+floorSurfacePlane.Color3 = Color3.fromRGB(0, 64, 255)
+
+local ceilSurfacePlane = wallSurfacePlane:Clone()
+ceilSurfacePlane.Color3 = Color3.fromRGB(200, 0, 0)
 
 local CARDINAL = {
 	-Vector3.xAxis,
@@ -65,6 +57,58 @@ local CONSTRUCTORS = {
 	Vector3 = Vector3.new,
 	Vector3int16 = Vector3int16.new,
 }
+
+-- Hopefully this isn't harsh on mem usage
+local TagParams: { [string]: RaycastParams } = {}
+local GetTagParams: (string) -> RaycastParams
+do
+	-- Add new parts to filters
+	workspace.DescendantAdded:Connect(function(part)
+		for tag, params in TagParams do
+			if part:HasTag(tag) and part:IsA("BasePart") then
+				params:AddToFilter(part)
+			end
+		end
+	end)
+
+	GetTagParams = function(tag: string): RaycastParams
+		if TagParams[tag] then
+			return TagParams[tag]
+		end
+
+		local new = RaycastParams.new()
+		new.FilterType = Enum.RaycastFilterType.Include
+		TagParams[tag] = new
+
+		local function append(object: Instance)
+			if object:IsA("BasePart") and object:HasTag(tag) then
+				new:AddToFilter(object)
+
+				local removing: RBXScriptConnection
+				removing = object.AncestryChanged:Connect(function()
+					if object:IsDescendantOf(workspace) then
+						return
+					end
+
+					-- :(
+					local filter = new.FilterDescendantsInstances
+					table.remove(filter, table.find(filter, object))
+					new.FilterDescendantsInstances = filter
+
+					-- Goodbye.
+					removing:Disconnect()
+					removing = nil
+				end)
+			end
+		end
+
+		for _, object: Instance in CollectionService:GetTagged(tag) do
+			append(object)
+		end
+
+		return new
+	end
+end
 
 -- To assist with making proper BLJ-able staircases.
 -- (or just plain ignoring some collision types)
@@ -163,23 +207,24 @@ function Util.DebugWater(waterLevel: number)
 end
 
 function Util.DebugCollisionFaces(wall: RaycastResult?, ceil: RaycastResult?, floor: RaycastResult?)
-	local colliding = {
-		Wall = wall,
-		Ceil = ceil,
-		Floor = floor,
-	}
-
-	for side, decal in surfacePlanes do
+	for decal, hit in
+		{
+			[wallSurfacePlane] = wall or false,
+			[ceilSurfacePlane] = ceil or false,
+			[floorSurfacePlane] = floor or false,
+		}
+	do
 		if script:GetAttribute("Debug") then
-			local hit: RaycastResult? = colliding[side]
-			local part: BasePart? = hit and hit.Instance :: BasePart
+			local part: BasePart? = if type(hit) ~= "boolean"
+				then hit :: RaycastResult and hit.Instance :: BasePart
+				else nil
 
 			if
 				(hit and part)
 				and part ~= workspace.Terrain
 				and (RunService:IsStudio() and true or part.Transparency < 1)
 			then
-				decal.Face = normalIdFromRaycast(hit)
+				decal.Face = normalIdFromRaycast(hit :: RaycastResult)
 				decal.Parent = part
 				continue
 			end
@@ -198,8 +243,8 @@ function Util.Raycast(pos: Vector3, dir: Vector3, maybeParams: RaycastParams?, w
 		local color = Color3.new(result and 0 or 1, result and 1 or 0, 0)
 
 		local line = Instance.new("LineHandleAdornment")
+		line.Length = result and result.Distance or dir.Magnitude
 		line.CFrame = CFrame.new(pos, pos + dir)
-		line.Length = dir.Magnitude
 		line.Thickness = 3
 		line.Color3 = color
 		line.Adornee = workspace.Terrain
@@ -217,28 +262,21 @@ function Util.Raycast(pos: Vector3, dir: Vector3, maybeParams: RaycastParams?, w
 end
 
 -- stylua: ignore
-function Util.RaycastSM64(pos: Vector3, dir: Vector3, maybeParams: RaycastParams?, worldRoot: WorldRoot?, extension: number?): RaycastResult?
-	local extension = math.max(math.ceil(tonumber(extension) or 1), 1)
-	local result: RaycastResult?
+function Util.RaycastSM64(pos: Vector3, dir: Vector3, maybeParams: RaycastParams?, worldRoot: WorldRoot?): RaycastResult?
+    local result: RaycastResult? = Util.Raycast(pos * Util.Scale, dir * Util.Scale, maybeParams or rayParams, worldRoot)
 
-	for i = 1, extension do
-		local off = dir * (i - 1)
-		result = Util.Raycast((pos + off) * Util.Scale, dir * Util.Scale, maybeParams or rayParams, worldRoot)
+    if result then
+        -- Cast back to SM64 unit scale.
+        result = {
+            Normal = result.Normal,
+            Material = result.Material,
+            Instance = result.Instance,
+            Distance = result.Distance / Util.Scale,
+            Position = result.Position / Util.Scale,
+        } :: any
+    end
 
-		if result then
-			-- Cast back to SM64 unit scale.
-			result = {
-				Normal = result.Normal,
-				Material = result.Material,
-				Instance = result.Instance,
-				Distance = result.Distance / Util.Scale,
-				Position = result.Position / Util.Scale,
-			} :: any
-			break
-		end
-	end
-
-	return result
+    return result
 end
 
 function Util.FindFloor(pos: Vector3): (number, RaycastResult?)
@@ -267,7 +305,8 @@ function Util.FindFloor(pos: Vector3): (number, RaycastResult?)
 	local unqueried: { [BasePart]: any } = {}
 
 	for i = 1, 2 do
-		result = Util.RaycastSM64(newPos + (Vector3.yAxis * 100), -Vector3.yAxis * 10000, rayParams, workspace, 4)
+		result =
+			Util.RaycastSM64(newPos + (Vector3.yAxis * 100), -Vector3.yAxis * 15000 / Util.Scale, rayParams, workspace)
 		local _, ignored = shouldIgnoreSurface(result, "Floor")
 		local hit: BasePart? = result and (result.Instance :: BasePart)
 
@@ -351,6 +390,22 @@ function Util.FindWallCollisions(pos: Vector3, offset: number, radius: number): 
 	end
 
 	return pos + disp, lastWall
+end
+
+-- stylua: ignore
+function Util.FindTaggedPlane(pos: Vector3, tag: string): (number, RaycastResult?)
+	local height = -11000
+	local result = Util.RaycastSM64(
+		pos + (Vector3.yAxis * 5000),
+		Vector3.yAxis * -10000,
+		GetTagParams(tag)
+	)
+
+	if result then
+		height = result.Position.Y
+	end
+
+	return height, result
 end
 
 function Util.SignedShort(x: number)
