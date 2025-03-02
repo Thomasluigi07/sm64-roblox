@@ -1,3 +1,6 @@
+# No more beta!
+This repo is dead and is no longer being updated due to me no longer doing anything Roblox related. Too bad! Original description has been left below.
+
 # sm64-roblox
 
 A port of Super Mario 64's movement code into Roblox Luau (in `--!strict` mode), hosted as a [rojo](https://rojo.space) project. Based on the SM64 decompilation project hosted at: https://github.com/n64decomp/sm64
